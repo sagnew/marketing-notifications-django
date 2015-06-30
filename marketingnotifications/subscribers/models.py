@@ -1,7 +1,13 @@
 from __future__ import unicode_literals
+import os
 
 from django.db import models
 from django.utils.encoding import python_2_unicode_compatible
+
+from twilio.rest import TwilioRestClient
+
+twilio_phone_number = os.environ.get('TWILIO_PHONE_NUMBER')
+twilio_client = TwilioRestClient()
 
 
 @python_2_unicode_compatible
@@ -30,3 +36,16 @@ class Subscriber(models.Model):
         else:
             return 'Sorry, we didn\'t understand that. available commands are' \
                    ': subscribe or unsubscribe'
+
+    def send_notification(self, message_body='', image_url=None):
+        if image_url:
+            message = twilio_client.messages.create(to=self.phone_number,
+                                                    from_=twilio_phone_number,
+                                                    body=message_body,
+                                                    media_url=image_url)
+        else:
+            message = twilio_client.messages.create(to=self.phone_number,
+                                                    from_=twilio_phone_number,
+                                                    body=message_body)
+
+        return message

@@ -1,10 +1,10 @@
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 
-from subscribers.models import Subscriber
-
 from twilio import twiml
+
+from subscribers.models import Subscriber
 
 
 @csrf_exempt
@@ -30,7 +30,15 @@ def message(request):
 
 @csrf_exempt
 def notify(request):
-    return
+    message_body = request.POST['message']
+    image_url = request.POST['imageUrl']
+
+    for subscriber in Subscriber.objects.filter(subscribed=True):
+        subscriber.send_notification(message_body=message_body,
+                                     image_url=image_url)
+
+    # return HttpResponseRedirect('/subscribers/')
+    return HttpResponse()
 
 
 def view_form(request):
