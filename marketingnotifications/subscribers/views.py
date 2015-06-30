@@ -1,5 +1,7 @@
 from django.http import HttpResponse
+from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
+
 from subscribers.models import Subscriber
 
 from twilio import twiml
@@ -24,3 +26,12 @@ def message(request):
                          'receive updates via text message.')
 
     return HttpResponse(response.toxml(), content_type='text/xml')
+
+
+@csrf_exempt
+def notify(request):
+    return
+
+
+def view_form(request):
+    return render(request, 'subscribers/index.html')
