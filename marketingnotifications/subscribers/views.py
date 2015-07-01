@@ -34,11 +34,17 @@ def notify(request):
     message_body = request.POST['message']
     image_url = request.POST['imageUrl']
 
-    for subscriber in Subscriber.objects.filter(subscribed=True):
-        subscriber.send_notification(message_body=message_body,
-                                     image_url=image_url)
+    subscribers = Subscriber.objects.filter(subscribed=True)
+    if subscribers:
+        for subscriber in subscribers:
+            subscriber.send_notification(message_body=message_body,
+                                         image_url=image_url)
+        messages.add_message(request, messages.SUCCESS,
+                             'Messages on their way!')
+    else:
+        messages.add_message(request, messages.ERROR,
+                             'Couldn\'t find any subscribers!')
 
-    messages.add_message(request, messages.SUCCESS, 'Messages on their way!')
     return redirect('/subscribers/form/')
 
 
