@@ -1,6 +1,7 @@
-from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import render
+from django.http import HttpResponse
+from django.shortcuts import render, redirect
 from django.views.decorators.csrf import csrf_exempt
+from django.contrib import messages
 
 from twilio import twiml
 
@@ -37,9 +38,10 @@ def notify(request):
         subscriber.send_notification(message_body=message_body,
                                      image_url=image_url)
 
-    # return HttpResponseRedirect('/subscribers/')
-    return HttpResponse()
+    messages.add_message(request, messages.SUCCESS, 'Messages on their way!')
+    return redirect('/subscribers/form/')
 
 
+@csrf_exempt
 def view_form(request):
     return render(request, 'subscribers/index.html')

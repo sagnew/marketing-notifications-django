@@ -29,8 +29,22 @@
     </nav>
     <div id="main" class="container">
       <!-- Display any error or informational messages-->
-      <div class="message-list">
-      </div>
+      {% if messages %}
+        <div class="message-list">
+            {% for message in messages %}
+              {% if message.tags == 'success' %}
+                <div class="box bg-success">
+                  <p>{{ message }}</p>
+                </div>
+              {% endif %}
+              {% if message.tags == 'error' %}
+                <div class="box bg-danger">
+                  <p>{{ message }}</p>
+                </div>
+              {% endif %}
+            {% endfor %}
+        </div>
+      {% endif %}
       {% block content %}{% endblock %}
     </div>
 
